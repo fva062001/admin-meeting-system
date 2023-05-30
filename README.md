@@ -17,13 +17,9 @@ Este proyecto se conecta con el API del back-office del mismo, por medio de los 
 
 - **`getReunion(id_reunion:number)`:** Este metodo recibe como parametro el jwt de la reunion al recibirlo, este hace un GET Request al Back-Office para luego recibir la informacion de la reunion listada en la pantalla principal del componente.
 - **`postEmpleado(id:number,id_reunion:number,body:Object)`:** Este metodo recibe tambien el jwt de la reunion y al mismo tiempo recibe el id del empleado por medio del formulario correspondiente, tambien se manda un body requerido por el Back-Office y manda un POST Request al Back-Office en el cual se conecta con el API del PAI para mandar un status y luego mandar por medio de la interfaz la respuesta recibida por medio del status.
-- **`postPersona(id_reunion:number,body:Participante)`:** Este metodo utiliza el jwt de la reunion y a su vez manda por medio del body la informacion correspondiente a la persona haciendo un POST Request al Back-Office que a su vez se comunica con el API del PAI para luego mandar un status y posteriormente con ese status presentapor medio de la interfaz de usuario la respuesta recibida.
+- **`postPersona(id_reunion:number,body:Participante)`:** Este metodo utiliza el jwt de la reunion y a su vez manda por medio del body la informacion correspondiente a la persona haciendo un POST Request al Back-Office que a su vez se comunica con el API del sistema de gestion de usuarios para luego mandar un status y posteriormente con ese status presentapor medio de la interfaz de usuario la respuesta recibida.
 
 ## Funcionamiento del Front
-
-Este front consta de un componente debido a la manera en la cual se planteo el componente, este consta de una serie de **`ng-template`** los cuales se encargan de por medio de condicionales, darle acceso al usuario final, el proceso del usuario es el siguiente: 
-<br>
-![Diagrama Usuario Externo](/mdImage/diagramaUE.png)
 
 Primeramente el usuario cuando entra al lobby (Pagina que muestra la informacion de la reunion), hace un GET Request por medio del metodo **`getReunion()`** en el **`ngOnInit()`**; si la reunion no existe, automaticamente la persona no podra hacer absolutamente nada y lo unico que vera es el template que especifica que no se ha encontrado la reunion, en el caso contrario podra proceder con los siguientes pasos.
 
