@@ -1,0 +1,68 @@
+<div class="loading" *ngIf="loading">
+  <mat-spinner color="primary"></mat-spinner>
+</div>
+<div id="wave1"></div>
+<ng-template [ngIf]="lobby">
+  <div class="main-container">
+    <div class="sub-container">
+      <div class="row">
+<h1>Sistema de Reuniones</h1>
+        <h5 style="padding-left: 10% !important; padding-right: 10% !important;">Bienvenid@ al sistema de gestion de
+          reuniones</h5>
+          <button class="btn btn-primary btnselect" (click)="change(1)">Registrar Reunion</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template [ngIf]="registrar">
+  <div class="main-container">
+    <div class="sub-container">
+      <div class="row">
+
+        <div class="col-12">
+          <h1 id="formTitle">Sistema de Reuniones</h1>
+        </div>
+        <form class="formPersona" [formGroup]="reunionForm" (ngSubmit)="registerReunion()">
+
+          <div class="form-group input-group-lg">
+            <input type="text" formControlName="tema" class="form-control" placeholder="Tema Reunion">
+            <span class="error text-danger d-block" *ngIf="tema?.invalid && tema?.touched">Este campo es
+              requerido</span>
+          </div>
+          <div class="form-group input-group-lg">
+            <input type="date" formControlName="fecha" class="form-control" placeholder="Fecha">
+            <span class="error text-danger d-block" *ngIf="fecha?.invalid && fecha?.touched">Este campo es
+              requerido</span>
+          </div>
+
+          <div class=" form-group nombres input-group-lg">
+            <input type="time" id="name" class="form-control" formControlName="horaInicio" placeholder="Hora Inicio">
+            <span class="error text-danger d-block" *ngIf="horaInicio?.invalid && horaInicio?.touched">Este campo es
+              requerido</span>
+          </div>
+          <div class=" form-group  mb-3 apellidos input-group-lg">
+            <input formControlName="horaFin" type="time" class="form-control" placeholder="Hora Fin">
+            <span class="error text-danger d-block" *ngIf="horaFin?.invalid && horaFin?.touched">Este campo es
+              requerido</span>
+          </div>
+
+          <div class="form-group input-group-lg">
+            <input type="text" formControlName="lugar" class="form-control" placeholder="Lugar">
+            <span class="error text-danger d-block" *ngIf="lugar?.invalid && lugar?.touched">Este campo es
+              requerido</span>
+          </div>
+          <div class="form-group input-group-lg">
+            <input type="email" formControlName="email" class="form-control" placeholder="Correo Electronico">
+            <span class="error text-danger d-block" *ngIf="email?.invalid && email?.touched">Este campo es requerido
+              verifique</span>
+          </div>
+          <button [disabled]="reunionForm.invalid" class="btn btn-lg btn-primary btnregisterPerson"
+            type="submit">Registrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div id="wave2"></div>
