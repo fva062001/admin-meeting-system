@@ -134,7 +134,6 @@ export class ConsultaComponent implements OnInit {
     const header = [['#', 'Nombre', 'Cargo', 'Institución', 'Correo Electronico', 'Sexo', 'Telefono', 'Tipo Documento', 'Documento', 'Fecha Registro']];
     const reportData = data.participantes.map((e, index) => [index + 1, e.nombreCompleto, e.cargo, e.institucion, e.correoElectronico, e.sexo, e.telefono, e.tipoDocumento, e.documento, moment(e.fechaRegistro).format("YYYY-MM-DD")]);
 
-    console.log(reportData)
 
     autoTable(doc, {
       head: header,
@@ -142,7 +141,7 @@ export class ConsultaComponent implements OnInit {
       headStyles: { fillColor: [82, 109, 130] }
       })
 
-    doc.save('table.pdf');
+    doc.save(`${data.tema.replace(" ", "")}-reporte.pdf`);
   }
 
 
@@ -156,7 +155,6 @@ export class ConsultaComponent implements OnInit {
   //     .then((res) => {
   //       const aElement = document.createElement("a");
   //       const reportName = `listado_participación_${(Math.random() + 1).toString(36).substring(7)}.${params.reportFormat}`;
-  //       console.log(reportName);
   //       aElement.setAttribute(
   //         "download",
   //         reportName
@@ -171,7 +169,6 @@ export class ConsultaComponent implements OnInit {
 
   // ngAfterViewInit(): void {
   //   const button = document.getElementById("btn");
-  //   console.log(button)
   //   if (button !== null) {
   //     button.addEventListener('click', () => {
   //       const params = {
@@ -191,9 +188,7 @@ export class ConsultaComponent implements OnInit {
     this.loading = true;
     this.activatedRoute.params.subscribe(params => {
       this.id_Reunion = params['id'];
-      console.log(this.id_Reunion)
       this.app.getReunion(this.id_Reunion).subscribe(data => {
-        console.log(data)
         this.reunion.tema = data.data.tema;
         this.reunion.fecha = data.data.fecha.slice(0, 10);
         this.reunion.hasta = data.data.hasta.slice(11, 16);

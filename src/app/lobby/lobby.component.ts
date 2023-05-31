@@ -49,7 +49,6 @@ export class LobbyComponent implements OnInit {
         this.registrar = true;
         break;
       case 2:
-        console.log('here')
         this.router.navigate(['reporte'])
       break;
     }
@@ -65,7 +64,6 @@ export class LobbyComponent implements OnInit {
     this.reunion.fecha = tempReunion.fecha;
     this.reunion.lugar = tempReunion.lugar;
     this.reunion.correoElectronico = tempReunion.email;
-    console.log(this.reunion);
     this.app.postReunion(this.reunion).subscribe(data => {
       Swal.fire({
         title: 'Gracias!',
