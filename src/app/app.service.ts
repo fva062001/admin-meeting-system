@@ -13,12 +13,11 @@ export class AppService {
 
   constructor(private http: HttpClient) { }
   private URL: string = environment.apiURL;
-  private reportURL:string = environment.reportURL;
   postReunion(body: Object): Observable<any> {
-    return this.http.post<any>(this.URL + `Reunion`, body);
+    return this.http.post<any>(this.URL + `reunion`, body);
   }
 
   getReunion(id_reunion: any) {
-    return this.http.get<Reunion>(this.URL + `Reunion/${id_reunion}`);
+    return this.http.get<Reunion>(this.URL + `reunion/${id_reunion}`);
   }
 }

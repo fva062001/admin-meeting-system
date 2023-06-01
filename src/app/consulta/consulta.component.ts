@@ -23,7 +23,6 @@ export class ConsultaComponent implements OnInit {
   login: boolean = false;
   registrar: boolean = false;
   reportForm: FormGroup;
-  reportURL: string = environment.reportURL;
   id_Reunion: string = '';
   reunion = {
     tema: "",
@@ -34,6 +33,7 @@ export class ConsultaComponent implements OnInit {
     correoElectronico: "",
     estatus: true
   }
+  fullReunion: any;
 
 
   constructor(private fb: FormBuilder, private app: AppService, private activatedRoute: ActivatedRoute) {
@@ -50,79 +50,11 @@ export class ConsultaComponent implements OnInit {
 
 
   generatePDF() {
-    const data = {
-      "codigoReunion": "6155f972c55e4c55a74de91a",
-      "tema": "Tema 1",
-      "correoElectronico": "email1@example.com",
-      "desde": "2023-05-31T10:30:00.000Z",
-      "hasta": "2023-05-31T12:30:00.000Z",
-      "fecha": "2023-05-31T14:00:00.000Z",
-      "lugar": "Location 1",
-      "participantes": [
-        {
-          "nombreCompleto": "Participant 1",
-          "cargo": "Manager",
-          "institucion": "Company A",
-          "correoElectronico": "participant1@example.com",
-          "sexo": "Male",
-          "telefono": "123456789",
-          "tipoDocumento": "ID Card",
-          "documento": "ABC123456",
-          "fechaRegistro": "2023-05-31T08:00:00.000Z"
-        },
-        {
-          "nombreCompleto": "Participant 2",
-          "cargo": "Engineer",
-          "institucion": "Company B",
-          "correoElectronico": "participant2@example.com",
-          "sexo": "Female",
-          "telefono": "987654321",
-          "tipoDocumento": "Passport",
-          "documento": "XYZ987654",
-          "fechaRegistro": "2023-05-30T15:30:00.000Z"
-        },
-        {
-          "nombreCompleto": "Participant 3",
-          "cargo": "Analyst",
-          "institucion": "Company C",
-          "correoElectronico": "participant3@example.com",
-          "sexo": "Male",
-          "telefono": "555555555",
-          "tipoDocumento": "Driver's License",
-          "documento": "DEF123456",
-          "fechaRegistro": "2023-05-29T10:15:00.000Z"
-        },
-        {
-          "nombreCompleto": "Participant 4",
-          "cargo": "Designer",
-          "institucion": "Company D",
-          "correoElectronico": "participant4@example.com",
-          "sexo": "Female",
-          "telefono": "777777777",
-          "tipoDocumento": "ID Card",
-          "documento": "GHI987654",
-          "fechaRegistro": "2023-05-28T14:45:00.000Z"
-        },
-        {
-          "nombreCompleto": "Participant 5",
-          "cargo": "Developer",
-          "institucion": "Company E",
-          "correoElectronico": "participant5@example.com",
-          "sexo": "Male",
-          "telefono": "999999999",
-          "tipoDocumento": "Passport",
-          "documento": "JKL123456",
-          "fechaRegistro": "2023-05-27T09:30:00.000Z"
-        }
-      ],
-      "estatus": true
-    };
-
     const doc = new jsPDF('l', 'mm', [297, 210]);
 
     const title = [['Lista de participación']];
 
-    const titleData = [[`Tema: ${data.tema}`], [`Fecha: ${moment(data.fecha).format("YYYY-MM-DD")}`], [`Lugar: ${data.lugar}`], [`Hora: ${this.convertTimestamp(data.desde)} - ${this.convertTimestamp(data.hasta)}`]]
+    const titleData = [[`Tema: ${this.fullReunion.tema}`], [`Fecha: ${moment(this.fullReunion.fecha).format("YYYY-MM-DD")}`], [`Lugar: ${this.fullReunion.lugar}`], [`Hora: ${this.convertTimestamp(this.fullReunion.desde)} - ${this.convertTimestamp(this.fullReunion.hasta)}`]]
 
     autoTable(doc, {
       head: title,
@@ -132,7 +64,7 @@ export class ConsultaComponent implements OnInit {
     })
 
     const header = [['#', 'Nombre', 'Cargo', 'Institución', 'Correo Electronico', 'Sexo', 'Telefono', 'Tipo Documento', 'Documento', 'Fecha Registro']];
-    const reportData = data.participantes.map((e, index) => [index + 1, e.nombreCompleto, e.cargo, e.institucion, e.correoElectronico, e.sexo, e.telefono, e.tipoDocumento, e.documento, moment(e.fechaRegistro).format("YYYY-MM-DD")]);
+    const reportData = this.fullReunion.participantes.map((e: any, index: any) => [index + 1, e.nombreCompleto, e.cargo, e.institucion, e.correoElectronico, e.sexo, e.telefono, e.tipoDocumento, e.documento, moment(e.fechaRegistro).format("YYYY-MM-DD")]);
 
 
     autoTable(doc, {
@@ -141,9 +73,16 @@ export class ConsultaComponent implements OnInit {
       headStyles: { fillColor: [82, 109, 130] }
       })
 
-    doc.save(`${data.tema.replace(" ", "")}-reporte.pdf`);
+    doc.save(`${this.fullReunion.tema.replace(" ", "")}-reporte.pdf`);
   }
 
+  convertTimeFormat(isoString: string): string {
+    var date = new Date(isoString);
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
 
 
   // downloadFile(url: string, params: any) {
@@ -189,22 +128,16 @@ export class ConsultaComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.id_Reunion = params['id'];
       this.app.getReunion(this.id_Reunion).subscribe(data => {
-        this.reunion.tema = data.data.tema;
-        this.reunion.fecha = data.data.fecha.slice(0, 10);
-        this.reunion.hasta = data.data.hasta.slice(11, 16);
-        this.reunion.desde = data.data.desde.slice(11, 16);
+        this.fullReunion = data;
+        this.reunion.tema = data.tema;
+        this.reunion.fecha = `${moment(data.fecha).format("YYYY-MM-DD")}`;
+        this.reunion.hasta = this.convertTimestamp(data.hasta);
+        this.reunion.desde = this.convertTimestamp(data.desde);
         this.loading = false;
       }, error => {
         this.loading = false;
       })
     })
-  }
-
-
-
-
-  getReport() {
-
   }
 
 

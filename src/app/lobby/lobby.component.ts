@@ -16,15 +16,7 @@ export class LobbyComponent implements OnInit {
   registrar: boolean = false;
   report: boolean = false;
   reunionForm: FormGroup;
-  reunion = {
-    tema: "",
-    desde: "",
-    hasta: "",
-    fecha: "",
-    lugar: "",
-    correoElectronico: "",
-    estatus: true
-  }
+
   reunionQuery: boolean = true;
 
   constructor(private fb: FormBuilder, private app: AppService,private router:Router) {
@@ -54,24 +46,37 @@ export class LobbyComponent implements OnInit {
     }
   }
 
+  convertTimeFormat(timeString: string): any {
+    var currentDate = new Date();
+    var [hours, minutes] = timeString.split(":");
+    currentDate.setHours(Number(hours));
+    currentDate.setMinutes(Number(minutes));
+    currentDate.setSeconds(0);
+    currentDate.setMilliseconds(0);
+
+    return currentDate.toISOString();
+  }
+
   registerReunion() {
     this.loading = true;
     let tempReunion: any = this.reunionForm.value;
     this.reunionQuery = false;
-    this.reunion.tema = tempReunion.tema;
-    this.reunion.desde = tempReunion.horaInicio;
-    this.reunion.hasta = tempReunion.horaFin;
-    this.reunion.fecha = tempReunion.fecha;
-    this.reunion.lugar = tempReunion.lugar;
-    this.reunion.correoElectronico = tempReunion.email;
-    this.app.postReunion(this.reunion).subscribe(data => {
+
+    let reunion: Reunion = {
+      tema: tempReunion.tema,
+      desde: this.convertTimeFormat(tempReunion.horaInicio),
+      hasta: this.convertTimeFormat(tempReunion.horaFin),
+      fecha: new Date(tempReunion.fecha),
+      lugar: tempReunion.lugar,
+      correoElectronico: tempReunion.email,
+    }
+    this.app.postReunion(reunion).subscribe(data => {
       Swal.fire({
         title: 'Gracias!',
         text: `Se ha registrado la reunión con exito`,
         icon: 'success',
         confirmButtonText: 'Entendido'
       })
-      this.reunionForm.reset();
       this.lobby = true;
       this.registrar = false;
       this.reunionQuery = true;

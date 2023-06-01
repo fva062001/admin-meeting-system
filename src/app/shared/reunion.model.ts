@@ -1,11 +1,10 @@
 export interface Reunion {
-    data: {
-        id: number,
-        tema: string,
-        area: string,
-        fecha: string,
-        desde: string,
-        hasta: string,
-        lugar: string,
-    }
+    id?: number | undefined,
+    tema: string,
+    fecha: Date,
+    desde: Date,
+    hasta: Date,
+    lugar: string,
+    correoElectronico: string,
+
 }
